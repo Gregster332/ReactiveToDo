@@ -1,0 +1,17 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '14.2'
+
+use_frameworks!
+inhibit_all_warnings!
+
+target 'DelegateMethod' do
+
+   pod 'RxFlow'
+   pod 'SnapKit'
+   pod 'RxSwift'
+   pod 'RxCocoa'
+   pod 'RealmSwift'
+   pod 'RxRealm'
+   pod 'RxDataSources'
+
+end
