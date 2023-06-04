@@ -16,7 +16,7 @@ final class ToDoViewController: UIViewController, ToDoViewControllerProtocol {
     
     // MARK: - Properties
     // swiftlint:disable implicitly_unwrapped_optional
-    var presenter: ToDoPresenterProtocol!
+    var viewModel: ToDoViewModelProtocol!
     // swiftlint:enable implicitly_unwrapped_optional
     private let disposedBag = DisposeBag()
     
@@ -34,54 +34,29 @@ final class ToDoViewController: UIViewController, ToDoViewControllerProtocol {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         setupView()
         setupConstraints()
-        bind()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-    }
-    
-    // MARK: - Methods
-
 }
 
 // MARK: - Private Methods
 private extension ToDoViewController {
     
     func bind() {
-//        toDoTitleTF.rx.text
-//            .orEmpty
-//            .bind(to: presenter.titleText)
-//            .disposed(by: disposedBag)
-//
-//        presenter.titleText
-//            .asObserver()
-//            .bind(to: toDoTitleTF.rx.text)
-//            .disposed(by: disposedBag)
-        
-        (toDoTitleTF.rx.text.orEmpty <-> presenter.titleText)
+        (toDoTitleTF.rx.text.orEmpty <-> viewModel.representTitle())
             .disposed(by: disposedBag)
         
-//        descriptionTF.rx.text
-//            .orEmpty
-//            .bind(to: presenter.descriptionText)
-//            .disposed(by: disposedBag)
-        
-        (descriptionTF.rx.text.orEmpty <-> presenter.descriptionText)
-            .disposed(by: disposedBag)
-        (datePicker.rx.date <-> presenter.selectedEndDate)
+        (descriptionTF.rx.text.orEmpty <-> viewModel.representDescription())
             .disposed(by: disposedBag)
         
-        (flaggedSwitch.rx.isOn <-> presenter.flagged)
+        (datePicker.rx.date <-> viewModel.representEndDate())
             .disposed(by: disposedBag)
-//        datePicker.rx.date
-//            .bind(to: presenter.selectedEndDate)
-//            .disposed(by: disposedBag)
         
-        presenter.toDoHandler
+        (flaggedSwitch.rx.isOn <-> viewModel.representFlagged())
+            .disposed(by: disposedBag)
+        
+        viewModel.representToDoHandler()
             .subscribe(onNext: { [weak self] value in
                 if let value = value {
                     self?.saveButton.backgroundColor =  UIColor(named: "blue")
@@ -98,11 +73,10 @@ private extension ToDoViewController {
         saveButton.rx.tap
             .asObservable()
             .subscribe(onNext: { [weak self] todo in
-                self?.presenter.saveData()
+                self?.viewModel.saveData()
             })
             .disposed(by: disposedBag)
         
-        //presenter.applyInitialDataIfExcided()
     }
     
     func setupView() {
@@ -225,30 +199,4 @@ private extension ToDoViewController {
     }
 }
 
-extension UIFont {
-    class func rounded(ofSize size: CGFloat, weight: UIFont.Weight) -> UIFont {
-        let systemFont = UIFont.systemFont(ofSize: size, weight: weight)
-        let font: UIFont
-        
-        if let descriptor = systemFont.fontDescriptor.withDesign(.rounded) {
-            font = UIFont(descriptor: descriptor, size: size)
-        } else {
-            font = systemFont
-        }
-        return font
-    }
-}
 
-infix operator <->
-func <-> <T>(property: ControlProperty<T>, variable: BehaviorSubject<T>) -> Disposable {
-    let bindToUIDisposable = variable.asObservable()
-        .bind(to: property)
-    let bindToVariable = property
-        .subscribe(onNext: { n in
-            variable.onNext(n)
-        }, onCompleted:  {
-            bindToUIDisposable.dispose()
-        })
-
-    return Disposables.create(bindToUIDisposable, bindToVariable)
-}

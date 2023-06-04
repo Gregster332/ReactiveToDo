@@ -1,25 +1,24 @@
 // 
-//  ToDoBuilder.swift
+//  MainBuilder.swift
 //  DelegateMethod
 //
-//  Created by Greg Zenkov on 5/18/23.
+//  Created by Greg Zenkov on 5/17/23.
 //
 
 import RxFlow
 
-final class ToDoBuilder {
+final class ListBuilder {
     
     static func build(
         realmService: RealmService,
-        toDo: ToDo?
+        categoryType: ToDoCategories
     ) -> (FlowContributor, UIViewController) {
         
-        let view = ToDoViewController()
-        let viewModel = ToDoViewModel(
+        let view = ListViewController(categoryType: categoryType)
+        let viewModel = ListViewModel(
             view: view,
             realmService: realmService,
-            toDo: toDo
-        )
+            categoryType: categoryType)
         
         view.viewModel = viewModel
         return (.contribute(withNextPresentable: view, withNextStepper: viewModel), view)

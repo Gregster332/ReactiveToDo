@@ -1,5 +1,5 @@
 // 
-//  MainViewController.swift
+//  ListViewController.swift
 //  DelegateMethod
 //
 //  Created by Greg Zenkov on 5/17/23.
@@ -11,25 +11,35 @@ import RealmSwift
 import RxRealm
 import RxDataSources
 
-protocol MainViewControllerProtocol: AnyObject {
+protocol ListViewControllerProtocol: AnyObject {
 }
 
-final class MainViewController: UIViewController, MainViewControllerProtocol {
+final class ListViewController: UIViewController, ListViewControllerProtocol {
     
     // MARK: - Properties
-    
     // swiftlint:disable implicitly_unwrapped_optional
-    var presenter: MainPresenterProtocol!
+    var viewModel: ListViewModelProtocol!
     // swiftlint:enable implicitly_unwrapped_optional
     private let disposedBag = DisposeBag()
+    private let categoryType: ToDoCategories
     
     // MARK: - Views
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let searchBar = UISearchBar()
     private let flaggedOnlyButton = UIButton(type: .custom)
+    private var addButton = UIBarButtonItem()
     var dataSource: RxTableViewSectionedReloadDataSource<ToDoSection>!
+    
+    init(categoryType: ToDoCategories) {
+        self.categoryType = categoryType
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNaviationItems()
@@ -40,14 +50,14 @@ final class MainViewController: UIViewController, MainViewControllerProtocol {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        presenter.getAllTodos()
+        viewModel.getAllTodos()
     }
     
     func bindTableView() {
         
         dataSource = RxTableViewSectionedReloadDataSource(configureCell: { _, tableView, indexPath, item in
-            let cell = tableView.dequeueCell(withClass: ToDoCell.self, for: indexPath) as ToDoCell
-            cell.configureWith(title: item.title, description: item.subtitle, date: item.endDate.toString(), flaged: item.flagged)
+            let cell = tableView.dequeueCell(withClass: ListCell.self, for: indexPath) as ListCell
+            cell.configureWith(title: item.title, description: item.subtitle, date: item.endDate, flaged: item.flagged, isExpiredSoon: item.isExpiredSoon)
             return cell
         })
         
@@ -56,20 +66,21 @@ final class MainViewController: UIViewController, MainViewControllerProtocol {
         }
         
         disposedBag.insert(
-        presenter.listItems
+        viewModel.representListItems()
             .bind(to: tableView.rx.items(dataSource: dataSource))
         )
         
-//        tableView.rx
-//            .setDelegate(self)
-//            .disposed(by: disposedBag)
+        viewModel.representFlagButtonHide()
+            .subscribe(onNext: { [weak self] isHidden in
+                self?.flaggedOnlyButton.isHidden = isHidden
+            })
+            .disposed(by: disposedBag)
         
         tableView.rx
             .itemSelected
             .map { $0 }
             .subscribe(onNext: { [weak self] index in
-                let object = self?.presenter.listItems.value[index.section].items[index.item]
-                self?.presenter.openToDo(toDo: object)
+                self?.viewModel.openToDo(item: index)
             })
             .disposed(by: disposedBag)
         
@@ -78,7 +89,7 @@ final class MainViewController: UIViewController, MainViewControllerProtocol {
             .asObservable()
             .share(replay: 1)
             .subscribe(onNext: { [weak self] item in
-                self?.presenter.deleteItem(item: item)
+                self?.viewModel.deleteItem(item: item)
             })
             .disposed(by: disposedBag)
         
@@ -87,19 +98,19 @@ final class MainViewController: UIViewController, MainViewControllerProtocol {
             .debounce(RxTimeInterval.milliseconds(500), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] key in
-                self?.presenter.searchigKey.accept(key)
+                self?.viewModel.representSearchigKey().accept(key)
             })
             .disposed(by: disposedBag)
         
         flaggedOnlyButton.rx.tap
             .asObservable()
             .subscribe(onNext: { [weak self] _ in
-                if let lastValue = self?.presenter.flaggedOnly.value {
+                if let lastValue = self?.viewModel.representFlaggedOnly().value {
                     self?.flaggedOnlyButton.setImage(
                         !lastValue ? UIImage(systemName: "flag.fill") : UIImage(systemName: "flag"),
                         for: .normal
                     )
-                    self?.presenter.flaggedOnly.accept(!lastValue)
+                    self?.viewModel.representFlaggedOnly().accept(!lastValue)
                 }
             })
             .disposed(by: disposedBag)
@@ -108,13 +119,12 @@ final class MainViewController: UIViewController, MainViewControllerProtocol {
 }
 
 // MARK: - Private Methods
-
-private extension MainViewController {
+private extension ListViewController {
     
     func setupView() {
         
         self.do {
-            $0.title = "Reminders"
+            $0.title = categoryType.rawValue.capitalized
         }
         
         view.do {
@@ -122,7 +132,7 @@ private extension MainViewController {
         }
         
         tableView.do {
-            $0.register(cellWithClass: ToDoCell.self)
+            $0.register(cellWithClass: ListCell.self)
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = false
             $0.separatorStyle = .none
@@ -145,12 +155,12 @@ private extension MainViewController {
     }
     
     func setupNaviationItems() {
-        let addButton = UIBarButtonItem(
+        addButton = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
             action: #selector(handleTapOnPlusButton)
         )
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: flaggedOnlyButton), addButton]
+        navigationItem.rightBarButtonItems = [addButton, UIBarButtonItem(customView: flaggedOnlyButton)]
         
         UINavigationBar.appearance().barTintColor = .black
         UINavigationBar.appearance().tintColor = .white
@@ -196,32 +206,6 @@ private extension MainViewController {
     
     // MARK: - UI Actions
     @objc func handleTapOnPlusButton() {
-        presenter.openToDo(toDo: nil)
+        viewModel.openToDo(item: nil)
     }
 }
-
-//extension MainViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UITableView.automaticDimension
-//    }
-//}
-
-//extension MainViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-//        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { _ in
-//            return self.makeContextMenu(for: indexPath)
-//        })
-//    }
-//
-//    private func makeContextMenu(for index: IndexPath) -> UIMenu {
-//        var actions = [UIAction]()
-//
-//        let action = UIAction(title: "Delete", attributes: [.destructive]) { _ in
-//            let item = self.presenter.toDos.value[index.section].items[index.item]
-//            //self.collectionView.reloadData()
-//            self.presenter.deleteItem(item: item)
-//        }
-//        actions.append(action)
-//        return UIMenu(title: "", children: actions)
-//    }
-//}

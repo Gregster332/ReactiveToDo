@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         coordinator.rx.didNavigate.subscribe(onNext: { (flow, step) in
-            print ("did navigate to flow=\(flow) and step=\(step)")
+            print("did navigate to flow=\(flow) and step=\(step)")
         }).disposed(by: disposeBag)
 
         let dependencies = dependencies()

@@ -8,12 +8,13 @@
 import SnapKit
 import RxSwift
 
-class ToDoCell: UITableViewCell {
+class ListCell: UITableViewCell {
     
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let dateLabel = UILabel()
     private let flagImageView = UIImageView()
+    private let expiredSoonLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,31 +28,27 @@ class ToDoCell: UITableViewCell {
         setupConstraints()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        //descriptionLabel.sizeToFit()
-        //contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8))
-        
-//        titleLabel.sizeToFit()
-//        descriptionLabel.sizeToFit()
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         flagImageView.image = nil
+        titleLabel.text = nil
+        descriptionLabel.text = nil
+        dateLabel.text = nil
+        expiredSoonLabel.isHidden = true
     }
     
-    func configureWith(title: String, description: String, date: String, flaged: Bool) {
+    func configureWith(title: String, description: String, date: String, flaged: Bool, isExpiredSoon: Bool) {
         titleLabel.text = title
         descriptionLabel.text = description
         dateLabel.text = date
         if flaged {
             flagImageView.image = UIImage(systemName: "flag.circle")
         }
+        expiredSoonLabel.isHidden = !isExpiredSoon
     }
 }
 
-private extension ToDoCell {
+private extension ListCell {
     
     func setupView() {
         
@@ -85,6 +82,13 @@ private extension ToDoCell {
             $0.tintColor = .systemRed
             $0.contentMode = .scaleAspectFill
         }
+        
+        expiredSoonLabel.do {
+            $0.text = "Expired soon"
+            $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+            $0.textColor = .systemRed
+            $0.textAlignment = .center
+        }
     }
     
     func setupConstraints() {
@@ -92,6 +96,7 @@ private extension ToDoCell {
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(dateLabel)
         contentView.addSubview(flagImageView)
+        contentView.addSubview(expiredSoonLabel)
         
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(8)
@@ -113,6 +118,11 @@ private extension ToDoCell {
         flagImageView.snp.makeConstraints {
             $0.size.equalTo(30)
             $0.top.trailing.equalToSuperview().inset(8)
+        }
+        
+        expiredSoonLabel.snp.makeConstraints {
+            $0.bottom.equalTo(dateLabel)
+            $0.trailing.equalTo(flagImageView)
         }
     }
 }

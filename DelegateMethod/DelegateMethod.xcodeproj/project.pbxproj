@@ -12,21 +12,28 @@
 		D06458FD27C2DBA00098BF52 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06458FC27C2DBA00098BF52 /* SceneDelegate.swift */; };
 		D064590427C2DBA20098BF52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D064590327C2DBA20098BF52 /* Assets.xcassets */; };
 		D064590727C2DBA20098BF52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D064590527C2DBA20098BF52 /* LaunchScreen.storyboard */; };
+		ED9DFD192A26A57600218C20 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DFD162A26A57600218C20 /* HomeViewModel.swift */; };
+		ED9DFD1A2A26A57600218C20 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DFD172A26A57600218C20 /* HomeViewController.swift */; };
+		ED9DFD1B2A26A57600218C20 /* HomeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DFD182A26A57600218C20 /* HomeBuilder.swift */; };
+		ED9DFD1D2A26A90600218C20 /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DFD1C2A26A90600218C20 /* HomeCell.swift */; };
 		EDC6574C2A14CB9100FF6D5A /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6574B2A14CB9100FF6D5A /* AppCoordinator.swift */; };
-		EDC657582A14CD6800FF6D5A /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657552A14CD6800FF6D5A /* MainPresenter.swift */; };
-		EDC657592A14CD6800FF6D5A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657562A14CD6800FF6D5A /* MainViewController.swift */; };
-		EDC6575A2A14CD6800FF6D5A /* MainBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657572A14CD6800FF6D5A /* MainBuilder.swift */; };
+		EDC657582A14CD6800FF6D5A /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657552A14CD6800FF6D5A /* ListViewModel.swift */; };
+		EDC657592A14CD6800FF6D5A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657562A14CD6800FF6D5A /* ListViewController.swift */; };
+		EDC6575A2A14CD6800FF6D5A /* ListBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657572A14CD6800FF6D5A /* ListBuilder.swift */; };
 		EDC6575E2A15139800FF6D5A /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6575D2A15139800FF6D5A /* RealmService.swift */; };
 		EDC657602A1514E800FF6D5A /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6575F2A1514E800FF6D5A /* Dependencies.swift */; };
-		EDC657632A1515FC00FF6D5A /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657622A1515FC00FF6D5A /* ToDoCell.swift */; };
+		EDC657632A1515FC00FF6D5A /* ListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657622A1515FC00FF6D5A /* ListCell.swift */; };
 		EDC657672A15FB2900FF6D5A /* Do.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657662A15FB2900FF6D5A /* Do.swift */; };
 		EDC657692A15FB4D00FF6D5A /* UITabelView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657682A15FB4D00FF6D5A /* UITabelView+Extension.swift */; };
 		EDC6576C2A15FB7A00FF6D5A /* UICollectionlView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6576B2A15FB7A00FF6D5A /* UICollectionlView+Extension.swift */; };
-		EDC657712A15FC8000FF6D5A /* ToDoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6576E2A15FC8000FF6D5A /* ToDoPresenter.swift */; };
+		EDC657712A15FC8000FF6D5A /* ToDoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6576E2A15FC8000FF6D5A /* ToDoViewModel.swift */; };
 		EDC657722A15FC8000FF6D5A /* ToDoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6576F2A15FC8000FF6D5A /* ToDoViewController.swift */; };
 		EDC657732A15FC8000FF6D5A /* ToDoBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657702A15FC8000FF6D5A /* ToDoBuilder.swift */; };
 		EDC657782A177A4700FF6D5A /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC657772A177A4700FF6D5A /* OnboardingViewModel.swift */; };
-		EDC6577C2A1AD71000FF6D5A /* RedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC6577B2A1AD71000FF6D5A /* RedViewController.swift */; };
+		EDE05C162A2B15A4008182A9 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C152A2B15A4008182A9 /* Date+Extension.swift */; };
+		EDE05C182A2B15B8008182A9 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C172A2B15B8008182A9 /* String+Extension.swift */; };
+		EDE05C1A2A2B15ED008182A9 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C192A2B15ED008182A9 /* UIFont+Extension.swift */; };
+		EDE05C1C2A2B1613008182A9 /* RxExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C1B2A2B1613008182A9 /* RxExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,21 +46,28 @@
 		D064590327C2DBA20098BF52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D064590627C2DBA20098BF52 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D064590827C2DBA20098BF52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED9DFD162A26A57600218C20 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		ED9DFD172A26A57600218C20 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		ED9DFD182A26A57600218C20 /* HomeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeBuilder.swift; sourceTree = "<group>"; };
+		ED9DFD1C2A26A90600218C20 /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
 		EDC6574B2A14CB9100FF6D5A /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		EDC657552A14CD6800FF6D5A /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
-		EDC657562A14CD6800FF6D5A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		EDC657572A14CD6800FF6D5A /* MainBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBuilder.swift; sourceTree = "<group>"; };
+		EDC657552A14CD6800FF6D5A /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
+		EDC657562A14CD6800FF6D5A /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		EDC657572A14CD6800FF6D5A /* ListBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListBuilder.swift; sourceTree = "<group>"; };
 		EDC6575D2A15139800FF6D5A /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		EDC6575F2A1514E800FF6D5A /* Dependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
-		EDC657622A1515FC00FF6D5A /* ToDoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoCell.swift; sourceTree = "<group>"; };
+		EDC657622A1515FC00FF6D5A /* ListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCell.swift; sourceTree = "<group>"; };
 		EDC657662A15FB2900FF6D5A /* Do.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Do.swift; sourceTree = "<group>"; };
 		EDC657682A15FB4D00FF6D5A /* UITabelView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabelView+Extension.swift"; sourceTree = "<group>"; };
 		EDC6576B2A15FB7A00FF6D5A /* UICollectionlView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionlView+Extension.swift"; sourceTree = "<group>"; };
-		EDC6576E2A15FC8000FF6D5A /* ToDoPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoPresenter.swift; sourceTree = "<group>"; };
+		EDC6576E2A15FC8000FF6D5A /* ToDoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoViewModel.swift; sourceTree = "<group>"; };
 		EDC6576F2A15FC8000FF6D5A /* ToDoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoViewController.swift; sourceTree = "<group>"; };
 		EDC657702A15FC8000FF6D5A /* ToDoBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoBuilder.swift; sourceTree = "<group>"; };
 		EDC657772A177A4700FF6D5A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
-		EDC6577B2A1AD71000FF6D5A /* RedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedViewController.swift; sourceTree = "<group>"; };
+		EDE05C152A2B15A4008182A9 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		EDE05C172A2B15B8008182A9 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		EDE05C192A2B15ED008182A9 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
+		EDE05C1B2A2B1613008182A9 /* RxExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +131,14 @@
 			path = DelegateMethod;
 			sourceTree = "<group>";
 		};
+		ED9DFD1E2A26A90B00218C20 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				ED9DFD1C2A26A90600218C20 /* HomeCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		EDC657482A14CA9500FF6D5A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -147,11 +169,10 @@
 		EDC6574D2A14CD1800FF6D5A /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				EDC6577D2A1B9EE600FF6D5A /* New Group */,
+				EDC6577D2A1B9EE600FF6D5A /* Home */,
 				EDC657762A177A1E00FF6D5A /* Onboarding */,
 				EDC6576D2A15FC3600FF6D5A /* ToDo */,
 				EDC6574E2A14CD2300FF6D5A /* Main */,
-				EDC6577B2A1AD71000FF6D5A /* RedViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -160,9 +181,9 @@
 			isa = PBXGroup;
 			children = (
 				EDC657612A1515C800FF6D5A /* Cells */,
-				EDC657552A14CD6800FF6D5A /* MainPresenter.swift */,
-				EDC657562A14CD6800FF6D5A /* MainViewController.swift */,
-				EDC657572A14CD6800FF6D5A /* MainBuilder.swift */,
+				EDC657552A14CD6800FF6D5A /* ListViewModel.swift */,
+				EDC657562A14CD6800FF6D5A /* ListViewController.swift */,
+				EDC657572A14CD6800FF6D5A /* ListBuilder.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -186,7 +207,7 @@
 		EDC657612A1515C800FF6D5A /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				EDC657622A1515FC00FF6D5A /* ToDoCell.swift */,
+				EDC657622A1515FC00FF6D5A /* ListCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -206,6 +227,10 @@
 				EDC657662A15FB2900FF6D5A /* Do.swift */,
 				EDC657682A15FB4D00FF6D5A /* UITabelView+Extension.swift */,
 				EDC6576B2A15FB7A00FF6D5A /* UICollectionlView+Extension.swift */,
+				EDE05C152A2B15A4008182A9 /* Date+Extension.swift */,
+				EDE05C172A2B15B8008182A9 /* String+Extension.swift */,
+				EDE05C192A2B15ED008182A9 /* UIFont+Extension.swift */,
+				EDE05C1B2A2B1613008182A9 /* RxExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -213,7 +238,7 @@
 		EDC6576D2A15FC3600FF6D5A /* ToDo */ = {
 			isa = PBXGroup;
 			children = (
-				EDC6576E2A15FC8000FF6D5A /* ToDoPresenter.swift */,
+				EDC6576E2A15FC8000FF6D5A /* ToDoViewModel.swift */,
 				EDC6576F2A15FC8000FF6D5A /* ToDoViewController.swift */,
 				EDC657702A15FC8000FF6D5A /* ToDoBuilder.swift */,
 			);
@@ -228,11 +253,15 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		EDC6577D2A1B9EE600FF6D5A /* New Group */ = {
+		EDC6577D2A1B9EE600FF6D5A /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				ED9DFD1E2A26A90B00218C20 /* Cells */,
+				ED9DFD162A26A57600218C20 /* HomeViewModel.swift */,
+				ED9DFD172A26A57600218C20 /* HomeViewController.swift */,
+				ED9DFD182A26A57600218C20 /* HomeBuilder.swift */,
 			);
-			path = "New Group";
+			path = Home;
 			sourceTree = "<group>";
 		};
 		EDC6577E2A1BABF400FF6D5A /* ReusableViews */ = {
@@ -357,22 +386,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDC657732A15FC8000FF6D5A /* ToDoBuilder.swift in Sources */,
-				EDC657712A15FC8000FF6D5A /* ToDoPresenter.swift in Sources */,
+				EDC657712A15FC8000FF6D5A /* ToDoViewModel.swift in Sources */,
 				EDC6574C2A14CB9100FF6D5A /* AppCoordinator.swift in Sources */,
 				EDC657782A177A4700FF6D5A /* OnboardingViewModel.swift in Sources */,
 				D06458FB27C2DBA00098BF52 /* AppDelegate.swift in Sources */,
-				EDC6577C2A1AD71000FF6D5A /* RedViewController.swift in Sources */,
+				EDE05C1A2A2B15ED008182A9 /* UIFont+Extension.swift in Sources */,
+				ED9DFD1A2A26A57600218C20 /* HomeViewController.swift in Sources */,
+				EDE05C1C2A2B1613008182A9 /* RxExtensions.swift in Sources */,
+				ED9DFD1B2A26A57600218C20 /* HomeBuilder.swift in Sources */,
 				EDC6575E2A15139800FF6D5A /* RealmService.swift in Sources */,
 				EDC6576C2A15FB7A00FF6D5A /* UICollectionlView+Extension.swift in Sources */,
-				EDC6575A2A14CD6800FF6D5A /* MainBuilder.swift in Sources */,
+				EDC6575A2A14CD6800FF6D5A /* ListBuilder.swift in Sources */,
 				EDC657722A15FC8000FF6D5A /* ToDoViewController.swift in Sources */,
+				EDE05C162A2B15A4008182A9 /* Date+Extension.swift in Sources */,
+				EDE05C182A2B15B8008182A9 /* String+Extension.swift in Sources */,
 				EDC657602A1514E800FF6D5A /* Dependencies.swift in Sources */,
 				EDC657692A15FB4D00FF6D5A /* UITabelView+Extension.swift in Sources */,
+				ED9DFD192A26A57600218C20 /* HomeViewModel.swift in Sources */,
+				ED9DFD1D2A26A90600218C20 /* HomeCell.swift in Sources */,
 				D06458FD27C2DBA00098BF52 /* SceneDelegate.swift in Sources */,
-				EDC657582A14CD6800FF6D5A /* MainPresenter.swift in Sources */,
-				EDC657632A1515FC00FF6D5A /* ToDoCell.swift in Sources */,
+				EDC657582A14CD6800FF6D5A /* ListViewModel.swift in Sources */,
+				EDC657632A1515FC00FF6D5A /* ListCell.swift in Sources */,
 				EDC657672A15FB2900FF6D5A /* Do.swift in Sources */,
-				EDC657592A14CD6800FF6D5A /* MainViewController.swift in Sources */,
+				EDC657592A14CD6800FF6D5A /* ListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

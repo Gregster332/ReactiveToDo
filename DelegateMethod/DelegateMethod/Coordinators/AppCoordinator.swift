@@ -10,7 +10,8 @@ import RxSwift
 import RxCocoa
 
 enum AppStep: Step {
-    case main
+    case home
+    case main(ToDoCategories)
     case toDo(ToDo?)
     case dismiss
 }
@@ -21,25 +22,9 @@ final class AppStepper: Stepper {
     private let disposeBag = DisposeBag()
 
     var initialStep: Step {
-        return AppStep.main
+        return AppStep.home
     }
-    
-//    private let appService = SettingsService()
-//
-//    init() {
-//        readyToEmitSteps()
-//    }
-//
-//    func readyToEmitSteps() {
-//        self.appService
-//            .rx
-//            .isNeeded
-//            .map { $0 ? AppStep.main : AppStep.someNew }
-//            .bind(to: steps)
-//            .disposed(by: disposeBag)
-//    }
 }
-
 
 final class AppFlow: Flow {
     
@@ -63,8 +48,10 @@ final class AppFlow: Flow {
     func navigate(to step: Step) -> FlowContributors {
         guard let step = step as? AppStep else { return FlowContributors.none }
         switch step {
-        case .main:
-            return main()
+        case .home:
+            return home()
+        case .main(let categoryType):
+            return main(categoryType: categoryType)
         case .toDo(let todoObject):
             return toDo(toDo: todoObject)
         case .dismiss:
@@ -73,9 +60,10 @@ final class AppFlow: Flow {
         }
     }
     
-    private func main() -> FlowContributors {
-        let main = MainBuilder.build(
-            realmService: dependencies.realmService
+    private func main(categoryType: ToDoCategories) -> FlowContributors {
+        let main = ListBuilder.build(
+            realmService: dependencies.realmService,
+            categoryType: categoryType
         )
         self.rootViewController.pushViewController(main.1, animated: true)
         return .one(flowContributor: main.0)
@@ -89,5 +77,10 @@ final class AppFlow: Flow {
         self.rootViewController.pushViewController(todo.1, animated: true)
         return .one(flowContributor: todo.0)
     }
-
+    
+    private func home() -> FlowContributors {
+        let home = HomeBuilder.build(realmService: dependencies.realmService)
+        self.rootViewController.setViewControllers([home.1], animated: true)
+        return .one(flowContributor: home.0)
+    }
 }

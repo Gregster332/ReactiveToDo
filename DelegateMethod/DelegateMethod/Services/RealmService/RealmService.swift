@@ -16,13 +16,21 @@ class ToDo: Object {
     @Persisted var subtitle = ""
     @Persisted var endDate = Date()
     @Persisted var flagged = false
+    
+    convenience init(title: String = "", subtitle: String = "", endDate: Date = Date(), flagged: Bool = false) {
+        self.init()
+        self.title = title
+        self.subtitle = subtitle
+        self.endDate = endDate
+        self.flagged = flagged
+    }
 }
 
 protocol RealmService {
     func addToDo(item: ToDo)
     func setItemCompleted(item: ToDo) -> Observable<Void>
-    func todoObservedObject() -> [ToDo]
     func updateItem(item: ToDo, query: String)
+    func getAllTodosAsObserver() -> Single<[ToDo]>
 }
 
 final class RealmServiceImpl: RealmService {
@@ -48,18 +56,9 @@ final class RealmServiceImpl: RealmService {
         }
     }
     
-    func todoObservedObject() -> [ToDo] {
-        
-        let realm = try! Realm()
-        let objects = realm.objects(ToDo.self).toArray()
-        
-        return objects
-    }
-    
     func updateItem(item: ToDo, query: String) {
         let realm = try! Realm()
         let object = realm.objects(ToDo.self).filter{ $0._id.stringValue == query }.first
-        print(object)
         if let object = object {
             try! realm.write {
                 object.title = item.title
@@ -67,6 +66,22 @@ final class RealmServiceImpl: RealmService {
                 object.endDate = item.endDate
                 object.flagged = item.flagged
             }
+        }
+    }
+    
+    func getAllTodosAsObserver() -> Single<[ToDo]> {
+        let realm = try! Realm()
+        let results = realm.objects(ToDo.self).toArray()
+        return Single.create { obs in
+            let maybeError = RxError.unknown
+            
+            if !results.isEmpty {
+                obs(.success(results))
+            } else {
+                obs(.failure(maybeError))
+            }
+            
+            return Disposables.create()
         }
     }
 }
