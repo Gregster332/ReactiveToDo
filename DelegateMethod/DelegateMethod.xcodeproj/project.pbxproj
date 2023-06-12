@@ -34,6 +34,7 @@
 		EDE05C182A2B15B8008182A9 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C172A2B15B8008182A9 /* String+Extension.swift */; };
 		EDE05C1A2A2B15ED008182A9 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C192A2B15ED008182A9 /* UIFont+Extension.swift */; };
 		EDE05C1C2A2B1613008182A9 /* RxExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C1B2A2B1613008182A9 /* RxExtensions.swift */; };
+		EDE05C1E2A2CE131008182A9 /* ToDoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE05C1D2A2CE131008182A9 /* ToDoModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		EDE05C172A2B15B8008182A9 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		EDE05C192A2B15ED008182A9 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		EDE05C1B2A2B1613008182A9 /* RxExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxExtensions.swift; sourceTree = "<group>"; };
+		EDE05C1D2A2CE131008182A9 /* ToDoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,12 +174,12 @@
 				EDC6577D2A1B9EE600FF6D5A /* Home */,
 				EDC657762A177A1E00FF6D5A /* Onboarding */,
 				EDC6576D2A15FC3600FF6D5A /* ToDo */,
-				EDC6574E2A14CD2300FF6D5A /* Main */,
+				EDC6574E2A14CD2300FF6D5A /* List */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
 		};
-		EDC6574E2A14CD2300FF6D5A /* Main */ = {
+		EDC6574E2A14CD2300FF6D5A /* List */ = {
 			isa = PBXGroup;
 			children = (
 				EDC657612A1515C800FF6D5A /* Cells */,
@@ -185,7 +187,7 @@
 				EDC657562A14CD6800FF6D5A /* ListViewController.swift */,
 				EDC657572A14CD6800FF6D5A /* ListBuilder.swift */,
 			);
-			path = Main;
+			path = List;
 			sourceTree = "<group>";
 		};
 		EDC6575B2A15138400FF6D5A /* Services */ = {
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				EDC6575D2A15139800FF6D5A /* RealmService.swift */,
+				EDE05C1D2A2CE131008182A9 /* ToDoModel.swift */,
 			);
 			path = RealmService;
 			sourceTree = "<group>";
@@ -392,6 +395,7 @@
 				D06458FB27C2DBA00098BF52 /* AppDelegate.swift in Sources */,
 				EDE05C1A2A2B15ED008182A9 /* UIFont+Extension.swift in Sources */,
 				ED9DFD1A2A26A57600218C20 /* HomeViewController.swift in Sources */,
+				EDE05C1E2A2CE131008182A9 /* ToDoModel.swift in Sources */,
 				EDE05C1C2A2B1613008182A9 /* RxExtensions.swift in Sources */,
 				ED9DFD1B2A26A57600218C20 /* HomeBuilder.swift in Sources */,
 				EDC6575E2A15139800FF6D5A /* RealmService.swift in Sources */,

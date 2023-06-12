@@ -45,7 +45,6 @@ final class HomeViewController: UIViewController, HomeViewControllerProtocol {
     }()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
     
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

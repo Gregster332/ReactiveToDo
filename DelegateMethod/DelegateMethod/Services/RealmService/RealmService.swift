@@ -10,27 +10,12 @@ import RxRealm
 import RxSwift
 import RxDataSources
 
-class ToDo: Object {
-    @Persisted(primaryKey: true) var _id: ObjectId
-    @Persisted var title = ""
-    @Persisted var subtitle = ""
-    @Persisted var endDate = Date()
-    @Persisted var flagged = false
-    
-    convenience init(title: String = "", subtitle: String = "", endDate: Date = Date(), flagged: Bool = false) {
-        self.init()
-        self.title = title
-        self.subtitle = subtitle
-        self.endDate = endDate
-        self.flagged = flagged
-    }
-}
-
 protocol RealmService {
     func addToDo(item: ToDo)
-    func setItemCompleted(item: ToDo) -> Observable<Void>
+    func setItemCompleted(item: ToDo)
     func updateItem(item: ToDo, query: String)
     func getAllTodosAsObserver() -> Single<[ToDo]>
+    func getAllToDos() -> Observable<[ToDo]>
 }
 
 final class RealmServiceImpl: RealmService {
@@ -43,17 +28,12 @@ final class RealmServiceImpl: RealmService {
         })
     }
     
-    func setItemCompleted(item: ToDo) -> Observable<Void> {
+    func setItemCompleted(item: ToDo) {
         let realm = try! Realm()
         
         try! realm.write({
             realm.delete(item)
         })
-        
-        return Observable.create { obs in
-            obs.onNext(())
-            return Disposables.create()
-        }
     }
     
     func updateItem(item: ToDo, query: String) {
@@ -79,6 +59,19 @@ final class RealmServiceImpl: RealmService {
                 obs(.success(results))
             } else {
                 obs(.failure(maybeError))
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getAllToDos() -> Observable<[ToDo]> {
+        return Observable.create { obs in
+            do {
+                let realm = try Realm()
+                obs.onNext(realm.objects(ToDo.self).toArray())
+            } catch {
+                obs.onError(error)
             }
             
             return Disposables.create()

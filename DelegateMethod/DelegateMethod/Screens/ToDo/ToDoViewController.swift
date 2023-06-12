@@ -16,8 +16,12 @@ final class ToDoViewController: UIViewController, ToDoViewControllerProtocol {
     
     // MARK: - Properties
     // swiftlint:disable implicitly_unwrapped_optional
-    var viewModel: ToDoViewModelProtocol!
+    var viewModel: ToDoViewModel!
     // swiftlint:enable implicitly_unwrapped_optional
+    private let titleTextPublish = PublishRelay<String>()
+    private let descriptionTextPublish = PublishRelay<String>()
+    private let endDatePublish = PublishRelay<Date>()
+    private let flaggedPublish = PublishRelay<Bool>()
     private let disposedBag = DisposeBag()
     
     // MARK: - Views
@@ -35,6 +39,7 @@ final class ToDoViewController: UIViewController, ToDoViewControllerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
+        bindViewModel()
         setupView()
         setupConstraints()
     }
@@ -44,24 +49,51 @@ final class ToDoViewController: UIViewController, ToDoViewControllerProtocol {
 private extension ToDoViewController {
     
     func bind() {
-        (toDoTitleTF.rx.text.orEmpty <-> viewModel.representTitle())
+        toDoTitleTF.rx.text
+            .orEmpty
+            .subscribe(onNext: { [weak self] text in
+                self?.titleTextPublish.accept(text)
+            })
             .disposed(by: disposedBag)
         
-        (descriptionTF.rx.text.orEmpty <-> viewModel.representDescription())
+        descriptionTF.rx.text
+            .orEmpty
+            .subscribe(onNext: { [weak self] text in
+                self?.descriptionTextPublish.accept(text)
+            })
             .disposed(by: disposedBag)
         
-        (datePicker.rx.date <-> viewModel.representEndDate())
+        datePicker.rx.date
+            .subscribe(onNext: { [weak self] date in
+                self?.endDatePublish.accept(date)
+            })
             .disposed(by: disposedBag)
         
-        (flaggedSwitch.rx.isOn <-> viewModel.representFlagged())
+        flaggedSwitch.rx.value
+            .subscribe(onNext: { [weak self] value in
+                self?.flaggedPublish.accept(value)
+            })
             .disposed(by: disposedBag)
-        
-        viewModel.representToDoHandler()
+    }
+    
+    func bindViewModel() {
+        let input = ToDoViewModel.Input(
+            titleText: titleTextPublish.asDriver(onErrorJustReturn: ""),
+            descriptionText: descriptionTextPublish.asDriver(onErrorJustReturn: ""),
+            selectedEndDate: endDatePublish.asDriver(onErrorJustReturn: Date()),
+            flagged: flaggedPublish.asDriver(onErrorJustReturn: false),
+            saveButtonTapped: saveButton.rx.tap
+        )
+        let output = viewModel.transform(input: input)
+        output.toDo
             .subscribe(onNext: { [weak self] value in
                 if let value = value {
+                    self?.toDoTitleTF.text = value.title
+                    self?.descriptionTF.text = value.subtitle
+                    self?.datePicker.date = value.endDate
+                    self?.flaggedSwitch.isOn = value.flagged
                     self?.saveButton.backgroundColor =  UIColor(named: "blue")
                     self?.saveButton.isEnabled = true
-                    self?.flaggedSwitch.isOn = value.flagged
                 } else {
                     self?.saveButton.backgroundColor = UIColor.systemGray6
                     self?.saveButton.isEnabled = false
@@ -69,14 +101,6 @@ private extension ToDoViewController {
                 }
             })
             .disposed(by: disposedBag)
-        
-        saveButton.rx.tap
-            .asObservable()
-            .subscribe(onNext: { [weak self] todo in
-                self?.viewModel.saveData()
-            })
-            .disposed(by: disposedBag)
-        
     }
     
     func setupView() {
@@ -134,10 +158,6 @@ private extension ToDoViewController {
             $0.textAlignment = .left
             $0.textColor = .black
             $0.text = "Flagged"
-        }
-        
-        flaggedSwitch.do {
-            $0.isOn = false
         }
         
         flaggedStackView.do {
@@ -198,5 +218,3 @@ private extension ToDoViewController {
         }
     }
 }
-
-

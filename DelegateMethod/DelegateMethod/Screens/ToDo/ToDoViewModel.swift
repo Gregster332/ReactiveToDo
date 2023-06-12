@@ -9,59 +9,97 @@ import RxSwift
 import RxCocoa
 import RxFlow
 
-protocol ToDoViewModelProtocol: AnyObject {
-    func saveData()
-    func representToDoHandler() -> BehaviorRelay<ToDo?>
-    func representTitle() -> BehaviorSubject<String>
-    func representDescription() -> BehaviorSubject<String>
-    func representEndDate() -> BehaviorSubject<Date>
-    func representFlagged() -> BehaviorSubject<Bool>
-}
-
-final class ToDoViewModel: ToDoViewModelProtocol, Stepper {
+final class ToDoViewModel: Stepper {
+    
+    struct Input {
+        let titleText: Driver<String>
+        let descriptionText: Driver<String>
+        let selectedEndDate: Driver<Date>
+        let flagged: Driver<Bool>
+        let saveButtonTapped: ControlEvent<Void>
+    }
+    
+    struct Output {
+        let toDo: Observable<ToDo?>
+    }
+    
     let steps = PublishRelay<Step>()
     
     // MARK: - Properties
-    private weak var view: ToDoViewControllerProtocol?
     private let realmService: RealmService
     
     private let toDoHandler: BehaviorRelay<ToDo?> = BehaviorRelay(value: nil)
-    private let titleText = BehaviorSubject<String>(value: "")
-    private let descriptionText = BehaviorSubject<String>(value: "")
-    private let selectedEndDate = BehaviorSubject<Date>(value: Date())
-    private let flagged = BehaviorSubject<Bool>(value: false)
+    private let titleText = PublishSubject<String>()
+    private let descriptionText = PublishSubject<String>()
+    private let selectedEndDate = PublishSubject<Date>()
+    private let flagged = PublishSubject<Bool>()
     private let disposedBag = DisposeBag()
     private var isUpdate = false
     private var idBeforeUpdate: String = ""
 
     // MARK: - Initialize
     init(
-        view: ToDoViewControllerProtocol,
         realmService: RealmService,
         toDo: ToDo?
     ) {
-        self.view = view
         self.realmService = realmService
         
         isUpdate = toDo != nil
         idBeforeUpdate = toDo?._id.stringValue ?? ""
         
-        applyInitialDataIfExcided(toDo: toDo)
-        
         Observable.combineLatest(titleText, descriptionText, selectedEndDate, flagged) { title, desc, date, flagged in
             return (title, desc, date, flagged)
         }
-        .map {
-            if !$0.0.isEmpty && !$0.1.isEmpty && !($0.2 < Date()) {
-                let toDo = ToDo(title: $0.0, subtitle: $0.1, endDate: $0.2, flagged: $0.3)
+        .debounce(RxTimeInterval.microseconds(500), scheduler: MainScheduler.instance)
+        .map { tuple -> ToDo? in
+            if !tuple.0.isEmpty && !tuple.1.isEmpty && !(tuple.2 < Date()) {
+                let toDo = ToDo(title: tuple.0, subtitle: tuple.1, endDate: tuple.2, flagged: tuple.3)
                 return toDo
             } else {
                 return nil
             }
         }
-        .asObservable()
-        .bind(to: toDoHandler)
+        .subscribe(onNext: { [weak self] toDo in
+            self?.toDoHandler.accept(toDo)
+        })
         .disposed(by: disposedBag)
+        
+        applyInitialDataIfExcided(toDo: toDo)
+    }
+    
+    func transform(input: Input) -> Output {
+        input.titleText
+            .drive(onNext: { [weak self] text in
+                self?.titleText.onNext(text)
+            })
+            .disposed(by: disposedBag)
+
+        input.descriptionText
+            .drive(onNext: { [weak self] text in
+                self?.descriptionText.onNext(text)
+            })
+            .disposed(by: disposedBag)
+
+        input.selectedEndDate
+            .drive(onNext: { [weak self] date in
+                self?.selectedEndDate.onNext(date)
+            })
+            .disposed(by: disposedBag)
+
+        input.flagged
+            .drive(onNext: { [weak self] flagged in
+                self?.flagged.onNext(flagged)
+            })
+            .disposed(by: disposedBag)
+        
+        input.saveButtonTapped
+            .bind { [weak self] _ in
+                self?.saveData()
+            }
+            .disposed(by: disposedBag)
+        
+        return Output(toDo: toDoHandler.asObservable())
+       
     }
     
     func saveData() {
@@ -73,26 +111,6 @@ final class ToDoViewModel: ToDoViewModelProtocol, Stepper {
             }
             steps.accept(AppStep.dismiss)
         }
-    }
-    
-    func representTitle() -> BehaviorSubject<String> {
-        return titleText
-    }
-    
-    func representDescription() -> BehaviorSubject<String> {
-        return descriptionText
-    }
-    
-    func representEndDate() -> BehaviorSubject<Date> {
-        return selectedEndDate
-    }
-    
-    func representFlagged() -> BehaviorSubject<Bool> {
-        return flagged
-    }
-    
-    func representToDoHandler() -> BehaviorRelay<ToDo?> {
-        return toDoHandler
     }
     
     private func applyInitialDataIfExcided(toDo: ToDo?) {

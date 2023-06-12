@@ -16,7 +16,6 @@ final class ListBuilder {
         
         let view = ListViewController(categoryType: categoryType)
         let viewModel = ListViewModel(
-            view: view,
             realmService: realmService,
             categoryType: categoryType)
         

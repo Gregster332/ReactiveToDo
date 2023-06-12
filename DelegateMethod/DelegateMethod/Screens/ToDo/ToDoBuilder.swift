@@ -16,11 +16,9 @@ final class ToDoBuilder {
         
         let view = ToDoViewController()
         let viewModel = ToDoViewModel(
-            view: view,
             realmService: realmService,
             toDo: toDo
         )
-        
         view.viewModel = viewModel
         return (.contribute(withNextPresentable: view, withNextStepper: viewModel), view)
     }

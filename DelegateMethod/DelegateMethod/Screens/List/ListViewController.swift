@@ -7,8 +7,7 @@
 
 import SnapKit
 import RxSwift
-import RealmSwift
-import RxRealm
+import RxCocoa
 import RxDataSources
 
 protocol ListViewControllerProtocol: AnyObject {
@@ -18,8 +17,10 @@ final class ListViewController: UIViewController, ListViewControllerProtocol {
     
     // MARK: - Properties
     // swiftlint:disable implicitly_unwrapped_optional
-    var viewModel: ListViewModelProtocol!
+    var viewModel: ListViewModel!
     // swiftlint:enable implicitly_unwrapped_optional
+    private let searchingText = BehaviorRelay<String>(value: "")
+    private let flaggedOnly = BehaviorRelay<Bool>(value: false)
     private let disposedBag = DisposeBag()
     private let categoryType: ToDoCategories
     
@@ -27,7 +28,8 @@ final class ListViewController: UIViewController, ListViewControllerProtocol {
     private let tableView = UITableView(frame: .zero, style: .grouped)
     private let searchBar = UISearchBar()
     private let flaggedOnlyButton = UIButton(type: .custom)
-    private var addButton = UIBarButtonItem()
+    private let addButton = UIButton(type: .custom)
+    private let spinner = UIActivityIndicatorView(style: .medium)
     var dataSource: RxTableViewSectionedReloadDataSource<ToDoSection>!
     
     init(categoryType: ToDoCategories) {
@@ -42,15 +44,17 @@ final class ListViewController: UIViewController, ListViewControllerProtocol {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        bindTableView()
+        bindViewModel()
         setupNaviationItems()
         setupView()
         setupConstraints()
-        bindTableView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.getAllTodos()
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        addButton.frame.size.width = 40
+        flaggedOnlyButton.frame.size.width = 40
     }
     
     func bindTableView() {
@@ -65,52 +69,26 @@ final class ListViewController: UIViewController, ListViewControllerProtocol {
             return true
         }
         
-        disposedBag.insert(
-        viewModel.representListItems()
-            .bind(to: tableView.rx.items(dataSource: dataSource))
-        )
-        
-        viewModel.representFlagButtonHide()
-            .subscribe(onNext: { [weak self] isHidden in
-                self?.flaggedOnlyButton.isHidden = isHidden
-            })
-            .disposed(by: disposedBag)
-        
-        tableView.rx
-            .itemSelected
-            .map { $0 }
-            .subscribe(onNext: { [weak self] index in
-                self?.viewModel.openToDo(item: index)
-            })
-            .disposed(by: disposedBag)
-        
-        tableView.rx
-            .itemDeleted
-            .asObservable()
-            .share(replay: 1)
-            .subscribe(onNext: { [weak self] item in
-                self?.viewModel.deleteItem(item: item)
-            })
-            .disposed(by: disposedBag)
-        
         searchBar.rx.text
             .orEmpty
-            .debounce(RxTimeInterval.milliseconds(500), scheduler: MainScheduler.instance)
+            .debounce(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] key in
-                self?.viewModel.representSearchigKey().accept(key)
+                self?.searchingText.accept(key)
             })
             .disposed(by: disposedBag)
-        
+
         flaggedOnlyButton.rx.tap
             .asObservable()
+            .do(onNext: { [weak self] _ in
+                if let value = self?.flaggedOnly.value {
+                    let buttonImage = value ? UIImage(systemName: "flag") : UIImage(systemName: "flag.fill")
+                    self?.flaggedOnlyButton.setImage(buttonImage, for: .normal)
+                }
+            })
             .subscribe(onNext: { [weak self] _ in
-                if let lastValue = self?.viewModel.representFlaggedOnly().value {
-                    self?.flaggedOnlyButton.setImage(
-                        !lastValue ? UIImage(systemName: "flag.fill") : UIImage(systemName: "flag"),
-                        for: .normal
-                    )
-                    self?.viewModel.representFlaggedOnly().accept(!lastValue)
+                if let value = self?.flaggedOnly.value {
+                    self?.flaggedOnly.accept(!value)
                 }
             })
             .disposed(by: disposedBag)
@@ -120,6 +98,31 @@ final class ListViewController: UIViewController, ListViewControllerProtocol {
 
 // MARK: - Private Methods
 private extension ListViewController {
+    
+    func bindViewModel() {
+        let input = viewModel.transform(ListViewModel.Input(
+            searchigKey: searchingText.asDriver(onErrorJustReturn: ""),
+            flaggedOnly: flaggedOnly.asDriver(onErrorJustReturn: false),
+            deleteItem:  tableView.rx.itemDeleted,
+            selectItem: tableView.rx.itemSelected,
+            createNewItem: addButton.rx.tap)
+        )
+        input.listItems
+            .do(onNext: { [weak self] value in
+                self?.spinner.isHidden = !value.isEmpty
+                self?.tableView.isHidden = value.isEmpty
+            })
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposedBag)
+        
+        input.hideFlaggedButton
+            .bind { value in
+                self.flaggedOnlyButton.isHidden = value
+            }
+            .disposed(by: disposedBag)
+        
+        viewModel.emitFlagged()
+    }
     
     func setupView() {
         
@@ -152,15 +155,15 @@ private extension ListViewController {
         flaggedOnlyButton.do {
             $0.setImage(UIImage(systemName: "flag"), for: .normal)
         }
+        
+        addButton.do {
+            $0.setImage(UIImage(systemName: "plus.app"), for: .normal)
+        }
     }
     
     func setupNaviationItems() {
-        addButton = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(handleTapOnPlusButton)
-        )
-        navigationItem.rightBarButtonItems = [addButton, UIBarButtonItem(customView: flaggedOnlyButton)]
+        
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: addButton), UIBarButtonItem(customView: flaggedOnlyButton)]
         
         UINavigationBar.appearance().barTintColor = .black
         UINavigationBar.appearance().tintColor = .white
@@ -169,7 +172,12 @@ private extension ListViewController {
     }
     
     func setupConstraints() {
+        view.addSubview(spinner)
         view.addSubview(tableView)
+        
+        spinner.snp.makeConstraints {
+            $0.center.equalToSuperview()
+        }
         
         tableView.snp.makeConstraints {
             $0.verticalEdges.equalTo(view.safeAreaLayoutGuide)
@@ -203,9 +211,18 @@ private extension ListViewController {
         
         return section
     }
-    
-    // MARK: - UI Actions
-    @objc func handleTapOnPlusButton() {
-        viewModel.openToDo(item: nil)
+}
+
+extension Reactive where Base == UIView {
+    func fade(duration: TimeInterval) -> Observable<UIView> {
+        return Observable.create { (observer) -> Disposable in
+            UIView.animate(withDuration: duration, animations: {
+                self.base.alpha = 0
+            }, completion: { (_) in
+                observer.onNext((self.base))
+                observer.onCompleted()
+            })
+            return Disposables.create()
+        }
     }
 }
